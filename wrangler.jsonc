@@ -7,10 +7,8 @@
   "rules": [
     { "type": "Text", "globs": ["**/*.md"], "fallthrough": true }
   ],
-  "vars": {
-    // Override in production via `wrangler secret` or Cloudflare dashboard.
-    "TWENTY_BASE_URL": "https://your-twenty-instance.example.com"
-  },
+  // TWENTY_BASE_URL is set via `wrangler secret` or the deploy button secrets prompt.
+  // Do not duplicate it as a plaintext var here.
   "durable_objects": {
     "bindings": [
       {
