@@ -1,0 +1,5 @@
+# Copy to .dev.vars for `wrangler dev`. Do NOT commit .dev.vars.
+COOKIE_ENCRYPTION_KEY=generate_with_openssl_rand_hex_32
+TWENTY_BASE_URL=https://your-twenty-instance.example.com
+# Optional: enables /admin/primer endpoint for uploading org-specific context
+# ADMIN_TOKEN=generate_with_openssl_rand_hex_32

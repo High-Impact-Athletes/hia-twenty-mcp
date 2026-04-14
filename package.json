@@ -1,0 +1,35 @@
+{
+  "name": "hia-twenty-mcp",
+  "version": "0.1.0",
+  "private": false,
+  "license": "Apache-2.0",
+  "author": "High Impact Athletes (https://highimpactathletes.org)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/High-Impact-Athletes/hia-twenty-mcp.git"
+  },
+  "description": "Remote MCP server for Twenty CRM on Cloudflare Workers",
+  "deploy": {
+    "secrets": {
+      "COOKIE_ENCRYPTION_KEY": "Generate with: openssl rand -hex 32",
+      "TWENTY_BASE_URL": "Twenty instance URL, e.g. https://crm.example.com"
+    }
+  },
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "agents": "^0.4.0",
+    "@cloudflare/workers-oauth-provider": "^0.2.2",
+    "@modelcontextprotocol/sdk": "1.26.0",
+    "hono": "^4.7.10",
+    "zod": "^3.25.23"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250620.0",
+    "typescript": "^5.8.3",
+    "wrangler": "^4.18.0"
+  }
+}
