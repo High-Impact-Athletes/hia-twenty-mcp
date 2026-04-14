@@ -290,7 +290,7 @@ async function safeText(res: Response): Promise<string> {
 }
 
 /**
- * Infer the target object name from a join column like "charityId" → "charity",
+ * Infer the target object name from a join column like "companyId" → "company",
  * or fall back to the field name itself.
  */
 function inferTargetFromJoinColumn(joinColumn?: string, fieldName?: string): string | undefined {
