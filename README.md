@@ -23,8 +23,12 @@ Exposes 8 generic, **schema-driven** tools that work on any Twenty object (Perso
 
 1. In Claude → Settings → Connectors → **Add custom connector**
 2. URL: `https://<your-worker>.workers.dev/mcp`
-3. Claude redirects you to a consent page. Paste your **personal** Twenty API key (from Twenty → Settings → Developers → Generate API key).
-4. Choose permission (read-only or read+write) and optional object scopes.
+3. Claude redirects you to a consent page where you'll need your **personal** Twenty API key. To get one:
+   - Log into your Twenty workspace in the browser
+   - Click the gear icon (bottom-left) → **Settings**
+   - Go to **Developers** (under the Workspace section in the sidebar)
+   - Click **+ Create API key**, give it a name (e.g. "Claude MCP"), and copy the key
+4. Paste the API key into the consent form. Choose permission (read-only or read+write) and optional object scopes.
 5. Done. Your key is stored encrypted in Cloudflare KV, bound to your session.
 
 Changes you make in Twenty are attributed to your Twenty user, not to a shared service account.
@@ -33,9 +37,13 @@ Changes you make in Twenty are attributed to your Twenty user, not to a shared s
 
 1. Click the deploy button above. Cloudflare will fork the repo and prompt for secrets.
 2. Set the required secrets:
-   - `COOKIE_ENCRYPTION_KEY` — `openssl rand -hex 32`
-   - `TWENTY_BASE_URL` — your Twenty instance URL (e.g. `https://crm.example.com`)
-3. (Optional) Set `ADMIN_TOKEN` — `openssl rand -hex 32` — enables the `/admin/*` endpoints for primer management.
+   - `COOKIE_ENCRYPTION_KEY` — a random hex string used to encrypt OAuth session cookies. **Not a Twenty secret** — just generate one:
+     ```bash
+     openssl rand -hex 32
+     ```
+     Copy the output (a 64-character hex string like `a1b2c3d4...`) and paste it in.
+   - `TWENTY_BASE_URL` — the full URL of your Twenty instance, including `https://` (e.g. `https://crm.example.com`). To find it: it's whatever URL you use to log into Twenty in your browser.
+3. (Optional) Set `ADMIN_TOKEN` — another random hex string (`openssl rand -hex 32`) — enables the `/admin/*` endpoints for uploading org-specific primer context.
 4. Note the deployed URL, e.g. `https://twenty-mcp.your-subdomain.workers.dev`.
 5. Share `<url>/mcp` with the team.
 
