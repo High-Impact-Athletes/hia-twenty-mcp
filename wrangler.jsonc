@@ -1,6 +1,6 @@
 {
   "name": "hia-twenty-mcp",
-  // "account_id": "<YOUR_CLOUDFLARE_ACCOUNT_ID>",
+  // "account_id": "<YOUR_CLOUDFLARE_ACCOUNT_ID>",  // or set CLOUDFLARE_ACCOUNT_ID env var
   "main": "src/index.ts",
   "compatibility_date": "2025-04-01",
   "compatibility_flags": ["nodejs_compat"],
@@ -20,7 +20,7 @@
   "kv_namespaces": [
     {
       "binding": "OAUTH_KV",
-      "id": "<OAUTH_KV_ID>"
+      "id": "<OAUTH_KV_ID>"  // create with: wrangler kv namespace create twenty-mcp-oauth
     }
   ],
   "migrations": [

@@ -109,7 +109,7 @@ export class TwentyMCP extends McpAgent<Env, State, Props> {
       {
         description:
           "Query records with optional filtering, ordering, and pagination. " +
-          "Filter uses Twenty's syntax, e.g. 'firstName[eq]:Jane' or 'createdAt[gt]:2026-01-01'. " +
+          "Filter uses Twenty's syntax, e.g. 'name.firstName[eq]:Jane' or 'createdAt[gt]:2026-01-01'. " +
           "Returns up to `limit` records (default 20, max 60) and a cursor for the next page.",
         inputSchema: {
           objectName: z.string().describe("Object name (singular or plural)"),
@@ -123,11 +123,11 @@ export class TwentyMCP extends McpAgent<Env, State, Props> {
           depth: z
             .number()
             .min(0)
-            .max(2)
+            .max(1)
             .optional()
             .default(1)
             .describe(
-              "0=only this record's fields, 1=include one level of relations (default), 2=two levels"
+              "0=only this record's fields, 1=include one level of relations (default)"
             ),
         },
       },
@@ -163,7 +163,7 @@ export class TwentyMCP extends McpAgent<Env, State, Props> {
         inputSchema: {
           objectName: z.string(),
           id: z.string().describe("Twenty UUID"),
-          depth: z.number().min(0).max(2).optional().default(1),
+          depth: z.number().min(0).max(1).optional().default(1),
         },
       },
       async ({ objectName, id, depth }) => {

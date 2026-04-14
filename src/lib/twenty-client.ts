@@ -25,7 +25,7 @@ export class TwentyClient {
     params: {
       limit?: number;
       after?: string;
-      filter?: string; // Twenty filter string, e.g. "firstName[eq]:Jane"
+      filter?: string; // Twenty filter string, e.g. "name.firstName[eq]:Jane"
       orderBy?: string;
       depth?: number;
     } = {}
@@ -35,7 +35,7 @@ export class TwentyClient {
     if (params.after) qs.set("starting_after", params.after);
     if (params.filter) qs.set("filter", params.filter);
     if (params.orderBy) qs.set("order_by", params.orderBy);
-    if (typeof params.depth === "number") qs.set("depth", String(params.depth));
+    if (typeof params.depth === "number") qs.set("depth", String(Math.min(params.depth, 1)));
 
     const path = `/rest/${objectNamePlural}${qs.toString() ? `?${qs}` : ""}`;
     const json = await this.rest<any>("GET", path);
@@ -147,13 +147,7 @@ export class TwentyClient {
                     isSystem
                     defaultValue
                     options
-                    relationDefinition {
-                      direction
-                      sourceObjectMetadata { nameSingular namePlural }
-                      targetObjectMetadata { nameSingular namePlural }
-                      sourceFieldMetadata { name }
-                      targetFieldMetadata { name }
-                    }
+                    settings
                   }
                 }
               }
@@ -189,13 +183,11 @@ export class TwentyClient {
         isSystem: e.node.isSystem,
         defaultValue: e.node.defaultValue ?? undefined,
         options: e.node.options ?? undefined,
-        relation: e.node.relationDefinition
+        relation: (e.node.type === "RELATION" && e.node.settings)
           ? {
-              direction: e.node.relationDefinition.direction,
-              targetObject:
-                e.node.relationDefinition.targetObjectMetadata?.nameSingular,
-              targetField:
-                e.node.relationDefinition.targetFieldMetadata?.name,
+              direction: e.node.settings.relationType ?? "UNKNOWN",
+              targetObject: inferTargetFromJoinColumn(e.node.settings.joinColumnName, e.node.name),
+              targetField: e.node.settings.joinColumnName ?? undefined,
             }
           : undefined,
       })),
@@ -297,6 +289,17 @@ async function safeText(res: Response): Promise<string> {
   }
 }
 
+/**
+ * Infer the target object name from a join column like "charityId" → "charity",
+ * or fall back to the field name itself.
+ */
+function inferTargetFromJoinColumn(joinColumn?: string, fieldName?: string): string | undefined {
+  if (joinColumn && joinColumn.endsWith("Id")) {
+    return joinColumn.slice(0, -2);
+  }
+  return fieldName ?? undefined;
+}
+
 // ---- metadata shapes (subset of Twenty's schema we use) ----
 
 export interface MetadataField {
@@ -357,12 +360,11 @@ interface MetadataObjectRaw {
         isSystem: boolean;
         defaultValue: unknown;
         options: unknown;
-        relationDefinition: {
-          direction: string;
-          sourceObjectMetadata: { nameSingular: string; namePlural: string } | null;
-          targetObjectMetadata: { nameSingular: string; namePlural: string } | null;
-          sourceFieldMetadata: { name: string } | null;
-          targetFieldMetadata: { name: string } | null;
+        settings: {
+          relationType?: string;
+          joinColumnName?: string;
+          onDelete?: string;
+          [key: string]: unknown;
         } | null;
       };
     }[];
