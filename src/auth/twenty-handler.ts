@@ -217,10 +217,17 @@ function requireAdmin(c: {
   }
   const auth = c.req.header("authorization") ?? "";
   const provided = auth.replace(/^Bearer\s+/i, "");
-  if (!provided || provided !== token) {
+  if (!provided || !timingSafeEqual(provided, token)) {
     return new Response("Unauthorized", { status: 401 });
   }
   return null;
+}
+
+function timingSafeEqual(a: string, b: string): boolean {
+  const enc = new TextEncoder();
+  const x = enc.encode(a);
+  const y = enc.encode(b);
+  return x.byteLength === y.byteLength && crypto.subtle.timingSafeEqual(x, y);
 }
 
 /**

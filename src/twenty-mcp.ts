@@ -184,7 +184,8 @@ export class TwentyMCP extends McpAgent<Env, State, Props> {
         description:
           "Escape hatch: run a raw GraphQL query. Use endpoint='metadata' for schema mutations (create/update/delete fields or objects) " +
           "or endpoint='graphql' for record-level GraphQL (rare — prefer the REST tools above). " +
-          "Returns the `data` field of the response; errors throw.",
+          "Returns the `data` field of the response; errors throw. " +
+          "Before any endpoint='metadata' mutation, call get_primer and follow its schema-change rules.",
         inputSchema: {
           endpoint: z.enum(["metadata", "graphql"]),
           query: z.string(),
